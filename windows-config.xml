@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<migration urlid="http://www.microsoft.com/migration/1.0/migxmlext/windows-config">
+  <component type="System" context="User">
+    <displayName>Windows Configuration</displayName>
+    <paths>
+      <path type="File">%WINDIR%\System32\config\registry</path>
+      <path type="Registry">HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion</path>
+    </paths>
+    
+    <role role="WindowsSettings">
+      <rules>
+        <detects>
+          <detect>
+            <condition negation="Yes">MigXmlHelper.IsOSLaterThan("NT","10.0.0")</condition>
+          </detect>
+        </detects>
+        
+        <rules>
+          <detects>
+            <detect>
+              <condition negation="Yes">MigXmlHelper.DoesObjectExist("Registry","HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced")</condition>
+            </detect>
+            
+            <detect>
+              <condition negation="Yes">MigXmlHelper.IsSameStringContent("Registry","HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced","Hidden","2")</condition>
+            </detect>
+          </detects>
+          
+          <addObjects>
+            <object>
+              <location type="Registry">HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced</location>
+              <attributes>ExpandString</attributes>
+              <bytes string="Yes" expand="Yes">%CSIDL_MYMUSIC%</bytes>
+            </object>
+          </addObjects>
+        </rules>
+        
+        <rules>
+          <detects>
+            <detect>
+              <condition negation="Yes">MigXmlHelper.DoesObjectExist("Registry","HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System")</condition>
+            </detect>
+            
+            <detect>
+              <condition negation="Yes">MigXmlHelper.IsSameStringContent("Registry","HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System","DisableRegistryTools","1")</condition>
+            </detect>
+          </detects>
+          
+          <addObjects>
+            <object>
+              <location type="Registry">HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Policies\System</location>
+              <attributes>ExpandString</attributes>
+              <bytes string="Yes" expand="Yes">%CSIDL_MYPICTURES%</bytes>
+            </object>
+          </addObjects>
+        </rules>
+      </rules>
+    </role>
+    
+    <role role="DesktopSettings">
+      <rules>
+        <detects>
+          <detect>
+            <condition negation="Yes">MigXmlHelper.DoesObjectExist("Registry","HKEY_CURRENT_USER\Control Panel\Desktop")</condition>
+          </detect>
+          
+          <detect>
+            <condition negation="Yes">MigXmlHelper.IsSameStringContent("Registry","HKEY_CURRENT_USER\Control Panel\Desktop","Wallpaper","C:\Windows\Wallpaper")</condition>
+          </detect>
+        </detects>
+        
+        <addObjects>
+          <object>
+            <location type="Registry">HKEY_CURRENT_USER\Control Panel\Desktop</location>
+            <attributes>ExpandString</attributes>
+            <bytes string="Yes" expand="Yes">%CSIDL_COMMON_PICTURES%</bytes>
+          </object>
+        </addObjects>
+      </rules>
+    </role>
+    
+    <role role="NetworkSettings">
+      <rules>
+        <detects>
+          <detect>
+            <condition negation="Yes">MigXmlHelper.DoesObjectExist("Registry","HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Network")</condition>
+          </detect>
+        </detects>
+        
+        <addObjects>
+          <object>
+            <location type="Registry">HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Network</location>
+            <attributes>ExpandString</attributes>
+            <bytes string="Yes" expand="Yes">DHCP_Enabled=1</bytes>
+          </object>
+        </addObjects>
+      </rules>
+    </role>
+  </component>
+</migration>
